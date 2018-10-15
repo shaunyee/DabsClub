@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import { GET_ALL_USERS } from '../queries';
 import { Query } from 'react-apollo';
+import '../Styles/buttons.css';
 
 class App extends Component {
   render() {
@@ -16,6 +17,7 @@ class App extends Component {
             console.log(allUsers);
             return (
               <div>
+              <button className="color-change">Click Me!!</button>
                 <ul className="cards">
                   {allUsers.map(user => (
                     <li className="card" key={user.id}>
