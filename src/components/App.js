@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
-import './App.css';
-import { GET_ALL_USERS } from '../queries';
 import { Query } from 'react-apollo';
+import { Link } from 'react-router-dom';
+
+import { GET_ALL_USERS } from '../queries';
 import '../Styles/buttons.css';
+import './App.css';
 
 class App extends Component {
   render() {
@@ -22,7 +24,7 @@ class App extends Component {
                   {allUsers.map(user => (
                     <li className="card" key={user.id}>
                       <div className="card-text">
-                        <h1>{user.username}</h1>
+                      <Link to={`/profile/${user.id}`} ><h1>{user.username}</h1></Link>
                         <p>{user.email}</p>
                       </div>
                     </li>

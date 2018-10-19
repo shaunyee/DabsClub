@@ -6,6 +6,7 @@ query {
     id
     username
     email
+    role
   }
 }
 `;
@@ -16,9 +17,34 @@ query {
     id
     username
     email
+    role
+    games {
+      opponent
+      location
+      date
+      id
+    }
   }
 }
 `;
+
+export const GET_USER = gql`
+  query($id: ID!) {
+    User(id: $id) {
+        id
+        username
+         email
+          role
+        games {
+        opponent
+        location
+        date
+        id
+      }
+    }
+  }
+`;
+
 
 export const SIGNIN_USER = gql `
 mutation signinUser($email: String!, $password: String!) {
@@ -35,5 +61,18 @@ export const SIGNUP_USER = gql`
             authProvider: { email: { email: $email, password: $password }}) {
              id
          }
+    }
+`;
+
+export const CREATE_GAME = gql`
+    mutation createGame($usersIds: [ID!]! $location: String!, $opponent: String!, $date: DateTime!) {
+        createGame(usersIds: $usersIds, location: $location, opponent: $opponent, date: $date){
+          users{
+            username
+          }
+        location
+        opponent
+        date
+  }
     }
 `;

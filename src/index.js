@@ -11,6 +11,7 @@ import Navbar from './components/UI/Navbar';
 import Signin from './components/Auth/Signin';
 import Signup from './components/Auth/Signup';
 import Profile from './components/Profile/Profile'
+import CreateGame from './components/Games/CreateGame'
 
 import { getToken } from "../src/Utilities/loginUtils";
 import withSession from './components/Auth/withSession'
@@ -50,7 +51,8 @@ const Root = ({ refetch, session }) => (
                 <Route path="/" exact component={App} />
                 <Route path="/signin" render={() => <Signin refetch={refetch} />} />
                 <Route path="/signup" render={() => <Signup refetch={refetch} />} />
-                <Route path="/profile" render={() => <Profile session={session} />} />
+                <Route path="/profile/:id" render={() => <Profile session={session} />} />
+                <Route path="/createGame" render={() => <CreateGame session={session} />} />
                 <Redirect to="/" />
             </Switch>
         </Fragment>

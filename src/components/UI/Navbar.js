@@ -30,8 +30,9 @@ const NavbarAuth = ({ session }) => (
                 <NavLink to="/" exact>Home</NavLink>
             </li>
             <li>
-                <NavLink to="/profile">Profile</NavLink>
+                <NavLink to={`/profile/${session.user.id}`}>Profile</NavLink>
             </li>
+            {session.user.role === 'ADMIN' && <li><NavLink to="/createGame">Add Games</NavLink></li>}
             <li>
                 <Signout />
             </li>
