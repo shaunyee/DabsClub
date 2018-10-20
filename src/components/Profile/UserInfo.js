@@ -4,19 +4,19 @@ import { GET_USER } from '../../queries';
 import { withRouter } from 'react-router-dom';
 
 import { formatDate } from '../../Utilities/formatDate';
+import Error from '../../Utilities/Error'
+import Spinner from '../UI/Spinner';
 
 
 const UserInfo = ({ session, match }) => {
-  console.log(match);
   const { id } = match.params;
   return (
     <Query query={ GET_USER }
     variables={{ id }}
     >
       {({ data, loading, error }) => {
-        console.log(data)
-        if(loading) return <p>Loading ...</p>
-        if(error) return <p>Error</p>
+        if(loading) return <Spinner />
+        if(error) return <Error error={error}/>
         const { email, games, username } = data.User;
         return (
           <div className="App">
@@ -30,7 +30,7 @@ const UserInfo = ({ session, match }) => {
                   return (
                       <div className="card" key={game.id}>
                           <h1>{game.opponent}</h1>
-                        <div className="card-text">
+                        <div className="game-card-text">
                           <h4>Date</h4>
                           <p>{formatDate(game.date)}</p>
                           <h4>Location</h4>

@@ -3,8 +3,9 @@ import {PassiveListener} from 'react-event-injector';
 import { Mutation, Query } from 'react-apollo';
 import styled from 'styled-components';
 
-import { CREATE_GAME, GET_ALL_USERS, GET_CURRENT_USER} from '../../queries';
+import { CREATE_GAME, GET_ALL_USERS, ALL_GAMES} from '../../queries';
 import Form from '../../Styles/Form';
+import Spinner from '../UI/Spinner'
 
 
 
@@ -39,11 +40,14 @@ const Checkbox = styled.input`
         left: 40px;
     }
     `;
+    const Label = styled.label`
+    width: 100px;
+`;
 
     const initialState = {
         opponent: '',
         location: 'Home',
-        date: Date.now(),
+        date: '',
         usersIds: [],
     }
 
@@ -51,15 +55,9 @@ const Checkbox = styled.input`
  class CreateGame extends Component {
      state = {...initialState};
 
-     disabled = () => {
-         this.setState({
-             disabled: true
-         });
-     }
-
-     handleSubmit = (event, createGame) => {
+     handleSubmit = async (event, createGame) => {
         event.preventDefault();
-        createGame().then(({ data }) => {
+        await createGame().then(({ data }) => {
             this.resetForm();
         });
       }
@@ -94,13 +92,13 @@ const Checkbox = styled.input`
             >
             {({ data, loading, error}) => {
                 const { allUsers } = data;
-                if(loading) return <p>Loading ...</p>
+                if(loading) return <Spinner />
                 return (
         <Mutation 
         mutation={CREATE_GAME} 
         variables={{ opponent, location, date, usersIds }}
         refetchQueries={() => [
-        { query: GET_CURRENT_USER, variables: { usersIds } }
+        { query: GET_ALL_USERS }, { query: ALL_GAMES }
       ]}
         >
             {(createGame, {data, loading, error }) => {
@@ -115,7 +113,7 @@ const Checkbox = styled.input`
                                 <option value="Away">Away</option>
                             </select>
                             {allUsers.map(user =>( 
-                                <label key={user.id} htmlFor={user.username}>
+                                <Label key={user.id} htmlFor={user.username}>
                                 {user.username}
                                     <Checkbox 
                                     id={user.id}
@@ -123,7 +121,7 @@ const Checkbox = styled.input`
                                     value={user.id}
                                     onChange={this.addUser}    
                                     />
-                            </label>
+                            </Label>
                             ))}
                             <button disabled={loading} type="submit" className="button-primary">Submit</button>
                         </Form>

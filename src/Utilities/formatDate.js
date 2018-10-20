@@ -5,3 +5,7 @@ export function formatDate(date) {
     return newDate
   }
   
+  export function valueFormatDate(date) {
+    const newDate = moment(date).format('YYYY-MM-DD')
+    return newDate;
+  }
