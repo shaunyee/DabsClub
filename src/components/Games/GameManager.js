@@ -22,9 +22,9 @@ const GameManager = props => {
     <TabPanel>
         <CreateGame /> 
     </TabPanel>
-    
+
     <TabPanel>
-        <EditGameList /> 
+        <EditGameList session={props.session}/> 
     </TabPanel>
   </Tabs>
     </div>

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Query, Mutation } from 'react-apollo';
 import styled from 'styled-components';
 
-import { ALL_GAMES, UPDATE_GAME, GET_ALL_USERS, } from '../../queries';
+import { ALL_GAMES, UPDATE_GAME, GET_ALL_USERS, DELETE_GAME, ALL_GAMES_NOT_ME } from '../../queries';
 import Form from '../../Styles/Form';
 import Error from '../../Utilities/Error';
 import Spinner from '../UI/Spinner';
@@ -52,6 +52,7 @@ class EditGameList extends Component {
         location: 'Home',
         date: '',
         usersIds: [],
+        price: 0,
         modal: false
     }
 
@@ -61,11 +62,20 @@ class EditGameList extends Component {
             this.closeModal();
         });
     };
+    handleDelete = (deleteGame) => {
+        const confirmDelete = window.confirm('Are you sure you want to delete this game?');
+    if(confirmDelete) {
+        deleteGame().then(({ data }) => {
+        })
+    }
+    }
+    
 
     handleChange = event => {
-        const { name, value } = event.target;
+        const { name, value, type } = event.target;
+        const val = type === 'number' ? parseFloat(value) : value;
         this.setState({
-          [name]: value
+          [name]: val
         })
       };
       
@@ -98,6 +108,7 @@ class EditGameList extends Component {
 
   render() {
       const { modal } = this.state;
+
       return (
           <Query query={GET_ALL_USERS}>
             {({ data, loading, error }) => {
@@ -110,9 +121,10 @@ class EditGameList extends Component {
             if(loading) return <Spinner />
             if(error) return <Error error={error} />
             const { allGames } = data;
+            const { session } = this.props;
             return(
                 <div className="App">
-                {modal && <EditGameModal users={allUsers} handleSubmit={this.handleSubmit} game={this.state} closeModal={this.closeModal} handleChange={this.handleChange} addUser={this.addUser} />}
+                {modal && <EditGameModal users={allUsers} session={session} handleSubmit={this.handleSubmit} game={this.state} closeModal={this.closeModal} handleChange={this.handleChange} addUser={this.addUser} />}
                     <h1>Game Editor</h1>
                     <p>Current Listing of Games</p>
                     <ul className="game-cards">
@@ -123,9 +135,44 @@ class EditGameList extends Component {
                              <div className="game-card-text">
                                  <h4>Date:</h4>
                                  <p>{formatDate(game.date)}</p>
-                                 <h4>Location</h4>
-                                 <p>{game.location}</p>
-                                 <button onClick={() => this.loadGame(game)} className="button-primary">Update</button>
+                                 <h4>Price</h4>
+                                 <p>${game.price}</p>
+                                 <Mutation 
+                                 mutation={DELETE_GAME} 
+                                 variables={{id: game.id}} 
+                                 refetchQueries={() => [
+                                     {query: ALL_GAMES}
+                                 ]}
+                                 update={(cache, { data: { deleteGame }}) => {
+                            const { allGames } = cache.readQuery({
+                                query: ALL_GAMES
+                            });
+                            cache.writeQuery({
+                                query: ALL_GAMES,
+                                data: {
+                                    allGames: allGames.filter(game => game._id !== deleteGame._id)
+                                }
+                            })
+                        }}
+                                 >
+                                 {(deleteGame, attrs = {}) => {
+
+                                return (
+                                    <div>
+                                    <button onClick={() => this.loadGame(game)} className="button-primary">Update</button>
+                                        <button
+                                        className="delete-button"
+                                        onClick={() => this.handleDelete(deleteGame)}
+                                        >
+                                        {attrs.loading ? 'Deleting...' : 'Delete'}
+                                        </button>
+                                    </div>
+                                    )
+                                    }}
+                                 </Mutation>
+                                <div>
+                                    
+                                </div>
                              </div>
                          </div>
                         )})}
@@ -140,12 +187,12 @@ class EditGameList extends Component {
   }
 }
 
-const EditGameModal = ({ addUser, users, handleSubmit, handleChange, closeModal, game }) => (
+const EditGameModal = ({ addUser, session, users, handleSubmit, handleChange, closeModal, game }) => (
     <Mutation 
         mutation={UPDATE_GAME} 
-        variables={{ id: game.id, opponent: game.opponent, location: game.location, date: game.date, usersIds: game.usersIds }}
+        variables={{ id: game.id, opponent: game.opponent, location: game.location, date: game.date, usersIds: game.usersIds, price: game.price }}
         refetchQueries={() => [
-            { query: GET_ALL_USERS}, {query: ALL_GAMES }
+            { query: GET_ALL_USERS}, {query: ALL_GAMES }, {query: ALL_GAMES_NOT_ME, variables: {id: session.user.id}}
         ]}
         >
         {updateGame => {
@@ -156,11 +203,12 @@ const EditGameModal = ({ addUser, users, handleSubmit, handleChange, closeModal,
                         <Form onSubmit={event => handleSubmit(event, updateGame)} className="modal-content-inner">
                             <h4>Edit Game</h4>
                             <input type="text" name="opponent" defaultValue={game.opponent} onChange={handleChange}/>
-                                    <input type="date" name="date" defaultValue={valueFormatDate(game.date)} onChange={handleChange}/>
-                                    <select type="text" name="location" defaultValue={game.location} onChange={handleChange}>
-                                        <option value="Home">Home</option>
-                                        <option value="Away">Away</option>
-                                    </select>
+                            <input type="date" name="date" defaultValue={valueFormatDate(game.date)} onChange={handleChange}/>
+                            <input type="number" name="price" defaultValue={game.price} onChange={handleChange} />
+                                <select type="text" name="location" defaultValue={game.location} onChange={handleChange}>
+                                    <option value="Home">Home</option>
+                                    <option value="Away">Away</option>
+                                </select>
                                     {users.map(user =>(
                                     <Label key={user.id} htmlFor={user.username}>
                                         {user.username}

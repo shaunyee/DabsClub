@@ -12,6 +12,7 @@ query {
       opponent
       location
       date
+      price
     }
   }
 }
@@ -29,6 +30,7 @@ query {
       location
       date
       id
+      price
     }
   }
 }
@@ -46,6 +48,7 @@ export const GET_USER = gql`
         location
         date
         id
+        price
       }
     }
   }
@@ -58,6 +61,7 @@ export const ALL_GAMES = gql`
       opponent
       location
       date
+      price
       users {
         id
         username
@@ -73,12 +77,30 @@ export const GET_GAME = gql`
       opponent
       location
       date
+      price
       users {
         id
         username
       }
     }
   }
+`;
+
+export const ALL_GAMES_NOT_ME = gql`
+query notMe($id: ID!) {
+  allGames(filter: {users_every: {id_not: $id}}) {
+    id
+    price
+    opponent
+    date
+    location
+    users {
+      id
+      username
+    }
+  }
+}
+
 `;
 
 
@@ -102,21 +124,22 @@ export const SIGNUP_USER = gql`
 `;
 
 export const CREATE_GAME = gql`
-    mutation createGame($usersIds: [ID!]! $location: String!, $opponent: String!, $date: String!) {
-        createGame(usersIds: $usersIds, location: $location, opponent: $opponent, date: $date){
+    mutation createGame($usersIds: [ID!]! $location: String!, $opponent: String!, $date: String!, $price: Int) {
+        createGame(usersIds: $usersIds, location: $location, opponent: $opponent, date: $date, price: $price){
           users{
             username
           }
         location
         opponent
         date
+        price
   }
     }
 `;
 
 export const UPDATE_GAME = gql`
-    mutation updateGame($id: ID!, $usersIds: [ID!]! $location: String!, $opponent: String!, $date: String!) {
-        updateGame(id: $id, usersIds: $usersIds, location: $location, opponent: $opponent, date: $date){
+    mutation updateGame($id: ID!, $usersIds: [ID!]! $location: String!, $opponent: String!, $date: String!, $price: Int) {
+        updateGame(id: $id, usersIds: $usersIds, location: $location, opponent: $opponent, date: $date, price: $price){
           users{
             id
             username
@@ -124,6 +147,28 @@ export const UPDATE_GAME = gql`
         location
         opponent
         date
+        price
   }
     }
+`;
+
+export const CREATE_TRADE = gql`
+mutation createTrade($usersIds: [ID!], $tradeFrom: String!, $tradeTo: String!, $requested: Boolean!, $status: String, $gamesIds: [ID!]){
+  createTrade(usersIds: $usersIds, tradeFrom: $tradeFrom, tradeTo: $tradeTo, requested: $requested, status: $status, gamesIds: $gamesIds) {
+    id
+    tradeTo
+    tradeFrom
+    requested
+    status
+  }
+}
+
+`;
+
+export const DELETE_GAME = gql`
+    mutation($id: ID!) {
+  deleteGame(id: $id) {
+    id
+  }
+}
 `;

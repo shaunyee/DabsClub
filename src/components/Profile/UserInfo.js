@@ -2,6 +2,7 @@ import React from 'react';
 import { Query } from 'react-apollo';
 import { GET_USER } from '../../queries';
 import { withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { formatDate } from '../../Utilities/formatDate';
 import Error from '../../Utilities/Error'
@@ -29,12 +30,16 @@ const UserInfo = ({ session, match }) => {
                 games.map(game => {
                   return (
                       <div className="card" key={game.id}>
+                      <div className="game-header-text">
+                          <Link to={`/game/${game.id}`}>
                           <h1>{game.opponent}</h1>
+                          </Link>
+                      </div>
                         <div className="game-card-text">
                           <h4>Date</h4>
                           <p>{formatDate(game.date)}</p>
-                          <h4>Location</h4>
-                          <p>{game.location}</p>
+                          <h4>Current Listed Price</h4>
+                          <p>${game.price}</p>
                         </div>
                       </div>
                   )})}

@@ -12,6 +12,7 @@ import Signin from './components/Auth/Signin';
 import Signup from './components/Auth/Signup';
 import Profile from './components/Profile/Profile'
 import Games from './components/Games/Games'
+import Game from './components/Games/Game'
 import GameManager from './components/Games/GameManager'
 
 import { getToken } from "../src/Utilities/loginUtils";
@@ -54,6 +55,7 @@ const Root = ({ refetch, session }) => (
                 <Route path="/signup" render={() => <Signup refetch={refetch} />} />
                 <Route path="/profile/:id" render={() => <Profile session={session} />} />
                 <Route path="/allGames" render={() => <Games session={session} />} />
+                <Route path="/game/:id" render={() => <Game session={session} />} />
                 <Route path="/gameManager" render={() => <GameManager session={session} />} />
                 <Redirect to="/" />
             </Switch>

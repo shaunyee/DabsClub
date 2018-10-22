@@ -1,10 +1,12 @@
 import React from 'react';
 import { Query } from 'react-apollo';
 
+
+import GamesTableView from './GamesTableView';
 import { ALL_GAMES } from '../../queries';
 import Spinner from '../UI/Spinner';
 import Error from '../../Utilities/Error';
-import { formatDate } from '../../Utilities/formatDate';
+
 
  const Games = () => {
   return (
@@ -17,18 +19,25 @@ import { formatDate } from '../../Utilities/formatDate';
                  <div className="App">
                  <h2>All Games for the Season</h2>
                     <ul className="game-cards">
+                        <table>
+                        <thead>
+                            <tr>
+                                <th>Opponent</th>
+                                <th>Date</th>
+                                <th>Location</th>
+                                <th>Price</th>
+                                <th>Ticker Owners</th>
+                                <th>Game Page</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                 {
                     allGames.map(game => {
                     return (
-                        <div className="card" key={game.id}>
-                            <h1>{game.opponent}</h1>
-                            <div className="game-card-text">
-                            <p>{formatDate(game.date)}</p>
-                            <h4>Location</h4>
-                            <p>{game.location}</p>
-                            </div>
-                        </div>
+                        <GamesTableView game={game} key={game.id} />
                     )})}
+                    </tbody>
+                        </table>
                     </ul>
                  </div>
              )}}

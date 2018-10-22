@@ -48,6 +48,7 @@ const Checkbox = styled.input`
         opponent: '',
         location: 'Home',
         date: '',
+        price: 0,
         usersIds: [],
     }
 
@@ -63,9 +64,10 @@ const Checkbox = styled.input`
       }
 
     handleChange = event => {
-        const { name, value } = event.target;
+        const { name, value, type } = event.target;
+        const val = type === 'number' ? parseFloat(value) : value;
         this.setState({
-          [name]: value
+          [name]: val
         })
       };
 
@@ -86,7 +88,7 @@ const Checkbox = styled.input`
     };
     
   render() {
-      const {opponent, location, date, usersIds } = this.state;
+      const {opponent, location, date, usersIds, price } = this.state;
     return (
         <Query query={GET_ALL_USERS}
             >
@@ -96,7 +98,7 @@ const Checkbox = styled.input`
                 return (
         <Mutation 
         mutation={CREATE_GAME} 
-        variables={{ opponent, location, date, usersIds }}
+        variables={{ opponent, location, date, usersIds, price }}
         refetchQueries={() => [
         { query: GET_ALL_USERS }, { query: ALL_GAMES }
       ]}
@@ -108,6 +110,7 @@ const Checkbox = styled.input`
                         <Form className="form" id="createGame" onSubmit={event => this.handleSubmit(event, createGame)}>
                             <input type="text" name="opponent" placeholder="Opponent" onChange={this.handleChange}/>
                             <PassiveListener><input type="date" name="date" placeholder="Game Date" onChange={this.handleChange}/></PassiveListener>
+                            <input type="number" name="price" placeholder="Price" onChange={this.handleChange} />
                             <select type="text" name="location" onChange={this.handleChange}>
                                 <option value="Home">Home</option>
                                 <option value="Away">Away</option>
