@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Query, Mutation } from 'react-apollo';
 import { Link } from 'react-router-dom';
 
-import { ALL_GAMES_NOT_ME, CREATE_TRADE} from '../../queries';
+import { ALL_GAMES_NOT_ME, CREATE_TRADE, GET_USER} from '../../queries';
 import Spinner from '../UI/Spinner';
 import Error from '../../Utilities/Error';
 import Form from '../../Styles/Form';
@@ -15,9 +15,13 @@ class TradeForGames extends Component {
         tradeFrom: this.props.session.user.id,
         usersIds : [this.props.session.user.id],
         gamesIds: [this.props.game.id],
-        tradeOpponent: '',
-        tradeForUsername: '',
-        tradeForDate: '',
+        fromUsername: this.props.session.user.username,
+        fromOp: this.props.game.opponent,
+        fromGameId: this.props.game.id,
+        toGameId: '',
+        toOp: '',
+        toUsername: '',
+        toDate: '',
         status: '',
         modal: false
     }
@@ -41,11 +45,12 @@ class TradeForGames extends Component {
         const gamesIds = [...this.state.gamesIds, gameId];
         this.setState({usersIds, 
             tradeTo, 
-            gamesIds, 
-            tradeOpponent: game.opponent, 
+            gamesIds,
+            toOp: game.opponent,
+            toGameId: game.id, 
             modal: true, 
-            tradeForUsername: username,
-            tradeForDate: game.date
+            toUsername: username,
+            toDate: game.date
         });
     }
     
@@ -115,7 +120,8 @@ class TradeForGames extends Component {
 const TradeConfirmation = ({ session, handleSubmit, closeModal, trade, myGame }) => (
     <Mutation 
         mutation={CREATE_TRADE} 
-        variables={{ gamesIds: trade.gamesIds, requested: true, tradeFrom: trade.tradeFrom, tradeTo: trade.tradeTo, usersIds: trade.usersIds, status: 'Pending' }}
+        variables={{ gamesIds: trade.gamesIds, fromGameId: myGame.id, toGameId: trade.toGameId, fromDate: myGame.date, toDate: trade.toDate, requested: true, fromOp: trade.fromOp, toOp: trade.toOp, fromUsername: session.user.username, toUsername: trade.toUsername, tradeFrom: trade.tradeFrom, tradeTo: trade.tradeTo, usersIds: trade.usersIds, status: 'Pending' }}
+        refetchQueries={() => [{query: GET_USER, variables: {id: session.user.id}}]}
         >
         {(createTrade, { data, loading, error }) => {
             if(error) return <Error error={error} />
@@ -127,7 +133,7 @@ const TradeConfirmation = ({ session, handleSubmit, closeModal, trade, myGame })
                     <h2>Please Confirm Trade Request</h2>
                     <p>{session.user.username}: {myGame.opponent} on {myGame.date}</p>
                     <h3>For</h3>
-                    <p>{trade.tradeForUsername}: {trade.tradeOpponent} on {trade.tradeForDate}</p>
+                    <p>{trade.toUsername}: {trade.toOp} on {trade.toDate}</p>
                         <Form onSubmit={event => handleSubmit(event, createTrade)} className="modal-content-inner">
                                     <hr/>
                                     <div className="modal-buttons">

@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import { formatDate } from '../../Utilities/formatDate';
 import Error from '../../Utilities/Error'
 import Spinner from '../UI/Spinner';
+import UserCurrentTrades from './UserCurrentTrades'
 
 
 const UserInfo = ({ session, match }) => {
@@ -18,12 +19,14 @@ const UserInfo = ({ session, match }) => {
       {({ data, loading, error }) => {
         if(loading) return <Spinner />
         if(error) return <Error error={error}/>
-        const { email, games, username } = data.User;
+        const { email, games, username, trades} = data.User;
         return (
           <div className="App">
           <h2>{username}'s Profile</h2>
             <p><strong>Email:</strong> {email}</p>
             <div>
+              <p>List of your Current Trades</p>
+                <UserCurrentTrades trades={trades} session={session}/>
               <p>Your Current Games</p>
               <ul className="game-cards">
               {

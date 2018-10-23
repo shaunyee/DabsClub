@@ -32,8 +32,8 @@ query {
       id
       price
     }
+    }
   }
-}
 `;
 
 export const GET_USER = gql`
@@ -43,14 +43,28 @@ export const GET_USER = gql`
         username
          email
           role
-        games {
-        opponent
-        location
-        date
-        id
-        price
-      }
+          games {
+          opponent
+          location
+          date
+          id
+          price
+         }
+          trades {
+            id
+          status
+          fromDate
+          toDate
+          fromOp
+          toOp
+          fromUsername
+          toUsername
+          tradeFrom
+          tradeTo
+          toGameId
+          fromGameId
     }
+  }
   }
 `;
 
@@ -105,6 +119,7 @@ query notMe($id: ID!) {
 
 
 
+
 export const SIGNIN_USER = gql `
 mutation signinUser($email: String!, $password: String!) {
     signinUser(email: {email: $email, password: $password }) {
@@ -153,16 +168,57 @@ export const UPDATE_GAME = gql`
 `;
 
 export const CREATE_TRADE = gql`
-mutation createTrade($usersIds: [ID!], $tradeFrom: String!, $tradeTo: String!, $requested: Boolean!, $status: String, $gamesIds: [ID!]){
-  createTrade(usersIds: $usersIds, tradeFrom: $tradeFrom, tradeTo: $tradeTo, requested: $requested, status: $status, gamesIds: $gamesIds) {
+mutation createTrade($usersIds: [ID!], $fromGameId: String!, $toGameId: String!, $fromDate: String!, $toDate:String, $tradeFrom: String!, $tradeTo: String!, $fromOp: String!, $toOp:String!, $fromUsername: String!, $toUsername:String!, $status: String, $gamesIds: [ID!]){
+  createTrade(usersIds: $usersIds, fromGameId: $fromGameId, toGameId: $toGameId, fromDate: $fromDate, toDate: $toDate, tradeFrom: $tradeFrom, tradeTo: $tradeTo, fromOp: $fromOp, toOp:$toOp, fromUsername:$fromUsername, toUsername: $toUsername, status: $status, gamesIds: $gamesIds) {
     id
     tradeTo
     tradeFrom
-    requested
     status
   }
 }
+`;
 
+export const ACCECPT_TRADE = gql`
+  mutation acceptTrade($id: ID!, $usersIds: [ID!]!) {
+    updateGame(id: $id, usersIds: $usersIds) {
+      id
+      opponent
+      users{
+        id
+        username
+      }
+    }
+  }
+`;
+
+export const SWAP_GAMES = gql`
+  mutation swapGames($id: ID!, $usersIds: [ID!]!) {
+    updateGame(id: $id, usersIds: $usersIds) {
+      id
+      opponent
+      users{
+        id
+        username
+      }
+    }
+  }
+`;
+
+export const TRADE_STATUS_ACCEPTED = gql`
+  mutation statusAccepted($id: ID!, $status: String!) {
+    updateTrade(id: $id, status: $status) {
+      id
+      status
+      }
+    }
+`;
+export const TRADE_STATUS_REJECTED = gql`
+  mutation statusRejected($id: ID!, $status: String!) {
+    updateTrade(id: $id, status: $status) {
+      id
+      status
+      }
+    }
 `;
 
 export const DELETE_GAME = gql`
