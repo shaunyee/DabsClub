@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Query, Mutation } from 'react-apollo';
+import { Query, Mutation, Subscription } from 'react-apollo';
 import { Link } from 'react-router-dom';
 
-import { ALL_GAMES_NOT_ME, CREATE_TRADE, GET_USER} from '../../queries';
+import { ALL_GAMES_NOT_ME, CREATE_TRADE, GET_USER, ALL_GAMES, GAME_SUBSCRIPTION} from '../../queries';
 import Spinner from '../UI/Spinner';
 import Error from '../../Utilities/Error';
 import Form from '../../Styles/Form';
@@ -61,7 +61,6 @@ class TradeForGames extends Component {
   render() {
     const { session } = this.props;
     const { id } = session.user;
-    console.log(this.props);
 
     return (
         <Query query={ALL_GAMES_NOT_ME} variables={{ id }}>
@@ -125,7 +124,6 @@ const TradeConfirmation = ({ session, handleSubmit, closeModal, trade, myGame })
         >
         {(createTrade, { data, loading, error }) => {
             if(error) return <Error error={error} />
-            console.log(trade)
             return (
             <div className="modal modal-open">
                 <div className="modal-inner">

@@ -4,6 +4,9 @@ import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-d
 import { setContext } from 'apollo-link-context';
 import { HttpLink, InMemoryCache, ApolloClient } from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
+import { split } from "apollo-link";
+import { WebSocketLink } from 'apollo-link-ws';
+import { getMainDefinition } from 'apollo-utilities'
 import './index.css';
 
 import App from './components/App';
@@ -34,8 +37,24 @@ const authLink = setContext(async (req, { headers }) => {
   const httpLink = new HttpLink({
     uri: API_KEY
   });
+
+  const wsLink = new WebSocketLink({
+    uri: `wss://subscriptions.us-west-2.graph.cool/v1/cjn74bqfr127l0129yvet00lq`,
+    options: {
+      reconnect: true
+    }
+  })
   
-const link = authLink.concat(httpLink);
+const linkWithAuth = authLink.concat(httpLink);
+
+const link = split(
+    ({ query }) => {
+      const { kind, operation } = getMainDefinition(query)
+      return kind === 'OperationDefinition' && operation === 'subscription'
+    },
+    wsLink,
+    linkWithAuth
+  );
 
   
   const client = new ApolloClient({
