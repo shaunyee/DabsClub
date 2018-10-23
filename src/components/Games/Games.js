@@ -1,20 +1,28 @@
 import React from 'react';
-import { Query } from 'react-apollo';
+import { Query, Subscription } from 'react-apollo';
 
 
 import GamesTableView from './GamesTableView';
-import { ALL_GAMES } from '../../queries';
+import { ALL_GAMES, GAME_SUBSCRIPTION } from '../../queries';
 import Spinner from '../UI/Spinner';
 import Error from '../../Utilities/Error';
 
 
  const Games = () => {
   return (
+      <Subscription subscription={GAME_SUBSCRIPTION}>
+        {({ data }) => (
       <Query query={ALL_GAMES}>
-          {({ data, loading, error}) => {
+          {({ data, loading, error, subscribeToMore}) => {
               if(loading) return <Spinner />
               if(error) return <Error error={error}/>
               const {allGames} = data;
+            subscribeToMore({
+          document: ALL_GAMES,
+          updateQuery: (prev, { subscriptionData }) => {
+            if(!subscriptionData.data) return prev;
+          }
+        })
              return (
                  <div className="App">
                  <h2>All Games for the Season</h2>
@@ -42,6 +50,8 @@ import Error from '../../Utilities/Error';
                  </div>
              )}}
       </Query>
+        )}
+      </Subscription>
   )
 }
 export default Games;

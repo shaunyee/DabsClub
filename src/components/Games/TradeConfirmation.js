@@ -1,6 +1,6 @@
 import React from 'react';
 import { Mutation } from 'react-apollo';
-import { ACCECPT_TRADE, SWAP_GAMES, GET_USER, TRADE_STATUS_ACCEPTED, TRADE_STATUS_REJECTED } from '../../queries';
+import { ACCECPT_TRADE, SWAP_GAMES, GET_USER, TRADE_STATUS_ACCEPTED, TRADE_STATUS_REJECTED, ALL_GAMES_NOT_ME } from '../../queries';
 
 
 
@@ -48,7 +48,7 @@ const TradeConfirmation = ({trade, session}) => {
                 {(acceptTrade) => (
                     <Mutation mutation={TRADE_STATUS_REJECTED} 
                     variables={{ id: trade.id, status: 'Rejected'}}
-                    refetchQueries={() => [{query: GET_USER, variables: {id: session.user.id}}]}
+                    refetchQueries={() => [{query: GET_USER, variables: {id: session.user.id}}, {query: ALL_GAMES_NOT_ME, variables: {id: session.user.id}}]}
                     >
                     {statusRejected => (
                         <div>

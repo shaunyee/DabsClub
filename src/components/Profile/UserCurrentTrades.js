@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import '../../Styles/tradeCards.css';
 import TradeConfirmation from '../Games/TradeConfirmation';
-import { formatDate } from '../../Utilities/formatDate'
+import { formatDate } from '../../Utilities/formatDate';
+
 
 
 class UserCurrentTrades extends Component {
   render() {
       const { trades, session  } = this.props;
-      console.log(trades);
     return (
       <div className="grid-container">
         {trades.map(trade => {

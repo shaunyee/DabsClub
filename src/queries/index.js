@@ -228,3 +228,33 @@ export const DELETE_GAME = gql`
   }
 }
 `;
+
+export const TRADE_SUBSCRIPTION = gql`
+subscription {
+  Trade {
+    mutation
+    node {
+      id
+      status
+      games{
+        opponent
+      }
+    }
+    mutation
+    previousValues {
+      id
+    }
+  }
+}
+`;
+
+export const GAME_SUBSCRIPTION = gql `
+subscription {
+  Game{
+    mutation
+    node {
+      id
+    }
+  }
+}
+`;

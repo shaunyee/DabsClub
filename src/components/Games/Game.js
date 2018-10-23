@@ -72,7 +72,7 @@ class Game extends Component {
                         ))
                         }
                         {ticketOwner && <button onClick={() => this.loadGame(Game)}>Update Price</button>}
-                        <InitiateTrade game={Game} session={session}/>
+                        {ticketOwner && <InitiateTrade game={Game} session={session}/>}
                     </div>
                 )}}
         </Query>
