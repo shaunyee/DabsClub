@@ -25,20 +25,19 @@ class Signup extends Component {
         });
     };
 
-    handleSubmit = async (event, createUser, signinUser) => {
+    handleSubmit = async (event, signupEmailUser, authenticateEmailUser) => {
         event.preventDefault();
         try {
-            await createUser().then(async ({ data }) => {
+            await signupEmailUser().then(async ({ data }) => {
                 await this.props.refetch();
             });
-            signinUser().then( ({ data }) => {
-                signIn(data.signinUser.token);
+            authenticateEmailUser().then( ({ data }) => {
+                signIn(data.authenticateEmailUser.token);
                 this.props.refetch();
                 this.clearState();
                 this.props.history.push('/profile')
             });
         } catch (e) {
-            console.log(e);
         }
       };
 
@@ -57,7 +56,7 @@ class Signup extends Component {
         mutation={SIGNIN_USER} 
         variables={{ email, password }} 
         >
-        {(signinUser, { data, loading, error }) => {
+        {(authenticateEmailUser, { data, loading, error }) => {
             if(loading) return null;
         return (
         <Mutation 
@@ -65,9 +64,9 @@ class Signup extends Component {
         variables={{ username, email, password }} 
         refetchQueries={() => [{query: GET_ALL_USERS}]}
         >
-            {( createUser, { data, loading, error }) => {
+            {( signupEmailUser, { data, loading, error }) => {
                 return(
-                <form className="form" onSubmit={event => this.handleSubmit(event, createUser, signinUser)} >
+                <form className="form" onSubmit={event => this.handleSubmit(event, signupEmailUser, authenticateEmailUser)} >
                     <input type="text" name="username" placeholder="Username" value={username} onChange={this.handleChange} />
                     <input type="email" name="email" placeholder="Email Adress" value={email} onChange={this.handleChange} />
                     <input type="password" name="password" placeholder="Password" value={password} onChange={this.handleChange} />

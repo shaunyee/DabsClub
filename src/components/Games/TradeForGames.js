@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Query, Mutation, Subscription } from 'react-apollo';
+import { Query, Mutation } from 'react-apollo';
 import { Link } from 'react-router-dom';
 
-import { ALL_GAMES_NOT_ME, CREATE_TRADE, GET_USER, ALL_GAMES, GAME_SUBSCRIPTION} from '../../queries';
+import { ALL_GAMES_NOT_ME, CREATE_TRADE, GET_USER, GET_GAME, GAME_ONE_PENDING, GAME_TWO_PENDING, LOG_TRADE_REQUEST } from '../../queries';
 import Spinner from '../UI/Spinner';
 import Error from '../../Utilities/Error';
 import Form from '../../Styles/Form';
@@ -25,8 +25,17 @@ class TradeForGames extends Component {
         status: '',
         modal: false
     }
-    handleSubmit =  (event, createTrade) => {
+    handleSubmit =  (event, createTrade, gameTwoPending, gameOnePending, logPriceChange) => {
         event.preventDefault();
+        gameTwoPending().then(({ data}) => {
+
+        })
+        gameOnePending().then(({ data }) => {
+
+        })
+        logPriceChange().then(({ data }) => {
+
+        })
          createTrade().then(({ data }) => {
             this.closeModal();
         })
@@ -69,6 +78,7 @@ class TradeForGames extends Component {
             if(error) return <Error error={error} />
             const { allGames } = data;
             const { modal } = this.state;
+            console.log(allGames)
             return (
                 <div className="App">
                  <h2>Games to trade for</h2>
@@ -102,7 +112,7 @@ class TradeForGames extends Component {
     </td>
     <td><Link to={`/game/${game.id}`}>Click Here</Link></td>
     <td>
-      <button onClick={() => this.initiateTrade(game)} className="color-change" >Trade</button>
+     {game.tradePending ? <button disabled={true} className="color-change" >Trade Pending</button> : <button onClick={() => this.initiateTrade(game)} className="color-change" >Trade</button>}
    </td>
   </tr>
                     )})}
@@ -117,32 +127,48 @@ class TradeForGames extends Component {
   }
 }
 const TradeConfirmation = ({ session, handleSubmit, closeModal, trade, myGame }) => (
-    <Mutation 
-        mutation={CREATE_TRADE} 
-        variables={{ gamesIds: trade.gamesIds, fromGameId: myGame.id, toGameId: trade.toGameId, fromDate: myGame.date, toDate: trade.toDate, requested: true, fromOp: trade.fromOp, toOp: trade.toOp, fromUsername: session.user.username, toUsername: trade.toUsername, tradeFrom: trade.tradeFrom, tradeTo: trade.tradeTo, usersIds: trade.usersIds, status: 'Pending' }}
-        refetchQueries={() => [{query: GET_USER, variables: {id: session.user.id}}]}
-        >
-        {(createTrade, { data, loading, error }) => {
-            if(error) return <Error error={error} />
-            return (
-            <div className="modal modal-open">
-                <div className="modal-inner">
-                    <div className="modal-content">
-                    <h2>Please Confirm Trade Request</h2>
-                    <p>{session.user.username}: {myGame.opponent} on {myGame.date}</p>
-                    <h3>For</h3>
-                    <p>{trade.toUsername}: {trade.toOp} on {trade.toDate}</p>
-                        <Form onSubmit={event => handleSubmit(event, createTrade)} className="modal-content-inner">
-                                    <hr/>
-                                    <div className="modal-buttons">
-                                    <button type="submit" className="button-primary">Request{loading ? 'ing' : ''} Trade</button>
-                                    <button onClick={closeModal}>Cancel</button>
-                                    </div>
-                        </Form>
+    <Mutation mutation={LOG_TRADE_REQUEST}
+    variables={{ type: "New Trade", gameId: myGame.id, fromUser: session.user.username, fromOpponent: myGame.opponent, fromDate: myGame.date, toUser: trade.toUsername, toOpponent: trade.toOp, toDate: trade.toDate }}
+    >
+    {logPriceChange => (
+    <Mutation mutation={GAME_TWO_PENDING} 
+    variables={{id: trade.toGameId, tradePending: true}}>
+        {gameTwoPending => (
+        <Mutation mutation={GAME_ONE_PENDING} 
+        variables={{id: myGame.id, tradePending: true}}>
+            {gameOnePending => (
+        <Mutation 
+            mutation={CREATE_TRADE} 
+            variables={{ gamesIds: trade.gamesIds, fromGameId: myGame.id, toGameId: trade.toGameId, fromDate: myGame.date, toDate: trade.toDate, requested: true, fromOp: trade.fromOp, toOp: trade.toOp, fromUsername: session.user.username, toUsername: trade.toUsername, tradeFrom: trade.tradeFrom, tradeTo: trade.tradeTo, usersIds: trade.usersIds, status: 'Pending' }}
+            refetchQueries={() => [ {query: GET_USER, variables: {id: session.user.id}},  { query: GET_GAME , variables: {id: myGame.id}} ]}
+            >
+            {(createTrade, { data, loading, error }) => {
+                if(error) return <Error error={error} />
+                return (
+                <div className="modal modal-open">
+                    <div className="modal-inner">
+                        <div className="modal-content">
+                        <h2 style={{color: 'black'}}>Please Confirm Trade Request</h2>
+                        <p style={{color: 'black'}}>{session.user.username}: {myGame.opponent} on {myGame.date}</p>
+                        <h2 style={{color: 'black'}}>For</h2>
+                        <p style={{color: 'black'}}>{trade.toUsername}: {trade.toOp} on {trade.toDate}</p>
+                            <Form onSubmit={event => handleSubmit(event, createTrade, gameOnePending, gameTwoPending, logPriceChange)} className="modal-content-inner">
+                                        <hr/>
+                                        <div className="modal-buttons">
+                                        <button type="submit" className="button-primary">Request{loading ? 'ing' : ''} Trade</button>
+                                        <button onClick={closeModal}>Cancel</button>
+                                        </div>
+                            </Form>
+                        </div>
                     </div>
                 </div>
-            </div>
-        )}}
-     </Mutation>
+            )}}
+        </Mutation>
+            )}
+        </Mutation>
+            )}
+    </Mutation>
+    )}
+    </Mutation>
 )
 export default TradeForGames;

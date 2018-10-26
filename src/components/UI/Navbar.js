@@ -35,6 +35,9 @@ const NavbarAuth = ({ session }) => (
             <li>
                 <NavLink to={`/allGames`}>All Games</NavLink>
             </li>
+            <li>
+                <NavLink to={`/feed`}>News Feed</NavLink>
+            </li>
             {session.user.role === 'ADMIN' && <li><NavLink to="/gameManager">Admin Manager</NavLink></li>}
             <li>
                 <Signout />

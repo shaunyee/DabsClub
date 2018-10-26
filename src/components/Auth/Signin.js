@@ -1,8 +1,33 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 import { Mutation } from 'react-apollo';
 import { SIGNIN_USER } from '../../queries';
-import { signIn } from '../../Utilities/loginUtils'
+import { signIn } from '../../Utilities/loginUtils';
+import styled from 'styled-components';
+
+const LinkStyle = styled.p`
+ display:inline-block;
+  text-decoration:none;
+  position:relative;
+  &:before{
+    content:"";
+    transition:all .2s ease-in;
+    display:inline-block;
+    border-radius:1em;
+    width:110%;
+    height:100%;
+    position:absolute;
+    left:-5%;
+    z-index:-1;
+  }
+  &:hover{
+    &:before{
+      background:rgba(0,0,255,.2);
+    }
+  }
+}
+`;
+
 
 const initialState = {
   email: "",
@@ -23,11 +48,11 @@ class Signin extends Component {
       });
   };
 
-  handleSubmit = (event, signinUser) => {
+  handleSubmit = async (event, authenticateEmailUser) => {
       event.preventDefault();
-      signinUser().then(async ({ data }) => {
-          signIn(data.signinUser.token);
-          await this.props.refetch();
+      await authenticateEmailUser().then( ({ data }) => {
+          signIn(data.authenticateEmailUser.token);
+            this.props.refetch();
           this.clearState();
           this.props.history.push('/profile')
       });
@@ -45,14 +70,18 @@ render() {
     <div className="App">
       <h2 className="App">Signin</h2>
       <Mutation mutation={SIGNIN_USER} variables={{ email, password }}>
-          {( signinUser, { data, loading, error }) => {
+          {( authenticateEmailUser, { data, loading, error }) => {
               return(
-              <form className="form" onSubmit={event => this.handleSubmit(event, signinUser)} >
-                  <input type="text" name="email" placeholder="email" value={email} onChange={this.handleChange} />
-                  <input type="password" name="password" placeholder="Password" value={password} onChange={this.handleChange} />
-                  <button disabled={loading || this.validateForm()} type="submit" className="button-primary">Submit</button>
-                  {error && <div>Error</div>}
-              </form>
+                <div>
+
+                <form className="form" onSubmit={event => this.handleSubmit(event, authenticateEmailUser)} >
+                    <input type="text" name="email" placeholder="email" value={email} onChange={this.handleChange} />
+                    <input type="password" name="password" placeholder="Password" value={password} onChange={this.handleChange} />
+                    <button disabled={loading || this.validateForm()} type="submit" className="button-primary">Submit</button>
+                    {error && <div>Error</div>}
+                </form>
+                <Link to={`/confirmReset`}><LinkStyle>Reset Password</LinkStyle></Link>
+            </div>
               )
           }}
       </Mutation>

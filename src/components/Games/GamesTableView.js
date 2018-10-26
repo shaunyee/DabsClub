@@ -10,6 +10,7 @@ import { formatDate } from '../../Utilities/formatDate';
     <td>{formatDate(game.date)}</td>
     <td>{game.location}</td>
     <td>${game.price}</td>
+    <td>{game.status}</td>
     <td>
     {game.users.map(user => {
         return(

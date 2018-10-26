@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 const ErrorStyles = styled.div`
   padding: 2rem;
-  background: white;
+  background: black;
   margin: 2rem 0;
   border: 1px solid rgba(0, 0, 0, 0.05);
   border-left: 30px solid teal;

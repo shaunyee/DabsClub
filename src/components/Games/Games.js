@@ -11,7 +11,9 @@ import Error from '../../Utilities/Error';
  const Games = () => {
   return (
       <Subscription subscription={GAME_SUBSCRIPTION}>
-        {({ data }) => (
+        {({ data }) => {
+            console.log(data)
+            return(
       <Query query={ALL_GAMES}>
           {({ data, loading, error, subscribeToMore}) => {
               if(loading) return <Spinner />
@@ -34,6 +36,7 @@ import Error from '../../Utilities/Error';
                                 <th>Date</th>
                                 <th>Location</th>
                                 <th>Price</th>
+                                <th>Status</th>
                                 <th>Ticker Owners</th>
                                 <th>Game Page</th>
                             </tr>
@@ -50,7 +53,7 @@ import Error from '../../Utilities/Error';
                  </div>
              )}}
       </Query>
-        )}
+            )}}
       </Subscription>
   )
 }

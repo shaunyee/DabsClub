@@ -13,10 +13,13 @@ import App from './components/App';
 import Navbar from './components/UI/Navbar';
 import Signin from './components/Auth/Signin';
 import Signup from './components/Auth/Signup';
-import Profile from './components/Profile/Profile'
-import Games from './components/Games/Games'
-import Game from './components/Games/Game'
-import GameManager from './components/Games/GameManager'
+import ConfirmReset from './components/Auth/ConfirmReset';
+import ResetPassword from './components/Auth/ResetPassword';
+import Profile from './components/Profile/Profile';
+import Games from './components/Games/Games';
+import Game from './components/Games/Game';
+import GameManager from './components/Games/GameManager';
+import Feed from './components/Feed/Feed';
 
 import { getToken } from "../src/Utilities/loginUtils";
 import withSession from './components/Auth/withSession'
@@ -72,10 +75,13 @@ const Root = ({ refetch, session }) => (
                 <Route path="/" exact component={App} />
                 <Route path="/signin" render={() => <Signin refetch={refetch} />} />
                 <Route path="/signup" render={() => <Signup refetch={refetch} />} />
+                <Route path="/confirmReset" render={() => <ConfirmReset refetch={refetch} />} />
                 <Route path="/profile/:id" render={() => <Profile session={session} />} />
                 <Route path="/allGames" render={() => <Games session={session} />} />
                 <Route path="/game/:id" render={() => <Game session={session} />} />
                 <Route path="/gameManager" render={() => <GameManager session={session} />} />
+                <Route path="/feed" render={() => <Feed session={session} />} />
+                <Route path="/reset/resetToken=/:id" component={ResetPassword} />
                 <Redirect to="/" />
             </Switch>
         </Fragment>

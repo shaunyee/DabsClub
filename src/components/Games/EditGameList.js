@@ -41,7 +41,7 @@ const Checkbox = styled.input`
     }
     `;
     const Label = styled.label`
-        width: 40px;
+        width: 30px;
     `;
 
 
@@ -210,7 +210,7 @@ const EditGameModal = ({ addUser, session, users, handleSubmit, handleChange, cl
                                     <option value="Away">Away</option>
                                 </select>
                                     {users.map(user =>(
-                                    <Label key={user.id} htmlFor={user.username}>
+                                    <Label style={{color: 'black'}} key={user.id} htmlFor={user.username}>
                                         {user.username}
                                         <Checkbox 
                                             id={user.id}

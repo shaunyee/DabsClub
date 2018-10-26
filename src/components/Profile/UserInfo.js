@@ -28,6 +28,7 @@ const UserInfo = ({ session, match }) => {
           variables: {id: session.user.id},
           updateQuery: (prev, { subscriptionData }) => {
             if(!subscriptionData.data) return prev;
+            console.log(subscriptionData.data)
           }
         })
         return (
