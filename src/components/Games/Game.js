@@ -74,7 +74,7 @@ class Game extends Component {
                         <p>Status <strong>{Game.status}</strong></p>
                         <p>Ticket Holders</p>
                         {Game.users.map(user => (
-                            <h2 key={user.id}>{user.username}</h2>
+                            <h1 key={user.id}>{user.username}</h1>
                         ))
                         }
                         {ticketOwner && <button onClick={() => this.loadGame(Game)}>Update Price/Staus</button>}

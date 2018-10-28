@@ -12,6 +12,7 @@
 		"es6-promisify": "^6.0.1",
 		"graphql": "^14.0.2",
 		"moment": "^2.22.2",
+		"nba": "^4.5.0",
 		"node-sass": "^4.9.3",
 		"npm": "^6.4.1",
 		"promisify": "0.0.3",

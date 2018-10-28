@@ -9,3 +9,8 @@ export function formatDate(date) {
     const newDate = moment(date).format('YYYY-MM-DD')
     return newDate;
   }
+
+  export function compaireDate(date) {
+    const newDate = moment(date).format('YYYYMMDD')
+    return newDate;
+  }

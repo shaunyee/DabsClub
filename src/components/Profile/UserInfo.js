@@ -38,7 +38,7 @@ const UserInfo = ({ session, match }) => {
                 <div>
                   <p>List of your Current Trades</p>
                     <UserCurrentTrades trades={trades} session={session}/>
-                  <p>Your Current Games</p>
+                  <p>Your Games</p>
                   <ul className="game-cards">
                   {
                     games.map(game => {

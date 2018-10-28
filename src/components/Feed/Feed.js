@@ -14,7 +14,7 @@ const FeedCard = styled.div`
 	height: calc(50% - 20px);
 	margin: 10px;
 	background-color: #DEE0E5;
-    border: 1px solid #f7c640;
+    border: 2px solid #f7c640;
     border-left: 30px solid #006BB8;
     p {
         color: black;
@@ -24,6 +24,8 @@ const FeedCard = styled.div`
 `;
 const CardWrapper = styled.div`
     position: relative;
+    display: flex;
+
 `;
 
 class Feed extends Component {
@@ -87,7 +89,7 @@ class Feed extends Component {
                             return (
                                 <CardWrapper key={feed.id}>
                                 <FeedCard>
-                                    <p>Trade has been Canceled beteen {feed.toUser} and {feed.fromUser}</p> 
+                                    <p>Trade has been Canceled between {feed.toUser} and {feed.fromUser}</p> 
                                 <p>{feed.fromOpponent} {feed.fromDate}</p>
                                 <p> for</p>
                                     <p>{feed.toOpponent} {feed.toDate}</p>
