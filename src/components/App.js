@@ -11,16 +11,50 @@ import './App.css';
 import {compaireDate} from '../Utilities/formatDate'
 
 const MainTitle = styled.div`
-  display: inline-grid;
-  grid-template-columns: 250px 250px;
-
+  display: inline;
+  padding: 0;
 `;
 
-const MainTitleText = styled.p`
+const MainTitleText = styled.span`
   color: #F7C640;
   font-family: 'Permanent Marker', cursive;
   font-weight: bold;
-  font-size: 6rem;
+  font-size: 8rem;
+  letter-spacing: 2px
+ 
+`;
+
+const MatchUpWrapper = styled.div`
+  width: 100%;
+  display: block;
+  height: 500px;
+  img {
+    width: 30%;
+    vertical-align: middle;
+    @media (max-width: 767px) {
+    width: 100%;
+  }
+  }
+  div {
+  display: inline;
+  @media (max-width: 767px) {
+    display: block;
+  }
+  }
+`;
+
+const VsSpan = styled.span`
+  font-size: 7rem;
+  font-weight: 700;
+  width: 35%
+  vertical-align: middle;
+  height: 250px;
+  font-family: 'Permanent Marker', cursive;
+  color: #FFDD1B;
+  -webkit-animation: neon3 1.5s ease-in-out infinite alternate;
+  -moz-animation: neon3 1.5s ease-in-out infinite alternate;
+  animation: neon3 1.5s ease-in-out infinite alternate;
+
 `;
 
 class App extends Component {
@@ -36,14 +70,24 @@ class App extends Component {
 
     
     const NBALogoUrl = `https://www.nba.com/.element/img/1.0/teamsites/logos/teamlogos_500x500/${triCode}.png`
+    const warriorsLogo = `https://www.nba.com/.element/img/1.0/teamsites/logos/teamlogos_500x500/gsw.png`
+
 
     return (
         <div className="App">
         <div>
           <MainTitle>
-            <MainTitleText className="main-title">Dabs</MainTitleText> <MainTitleText className="main-title">Club</MainTitleText>
+           <p><MainTitleText className="main-title">Dabs</MainTitleText> <MainTitleText className="main-title">Club</MainTitleText></p>
           </MainTitle>
+          <br />
+            <span>Next Game</span>
+            <MatchUpWrapper>
+                <div>
                   <img src={`${NBALogoUrl}`} alt=""/>
+                  <VsSpan>Vs</VsSpan>
+                  <img src={warriorsLogo} alt=""/>
+                </div>
+          </MatchUpWrapper>
           </div>
         </div>
     );

@@ -12,7 +12,6 @@ import Error from '../../Utilities/Error';
   return (
       <Subscription subscription={GAME_SUBSCRIPTION}>
         {({ data }) => {
-            console.log(data)
             return(
       <Query query={ALL_GAMES}>
           {({ data, loading, error, subscribeToMore}) => {
@@ -28,16 +27,22 @@ import Error from '../../Utilities/Error';
              return (
                  <div className="App">
                  <h2>All Games for the Season</h2>
-                    <ul className="game-cards">
+                    <div>
                         <table>
                         <thead>
                             <tr>
                                 <th>Opponent</th>
                                 <th>Date</th>
-                                <th>Location</th>
-                                <th>Price</th>
-                                <th>Status</th>
-                                <th>Ticker Owners</th>
+                                <th>Average Ticket Price</th>
+                                <th>TicketStatus</th>
+                                <th>Ticket 1</th>
+                                <th>Ticket 1 Price/Status</th>
+                                <th>Ticket 2</th>
+                                <th>Ticket 2 Price/Status</th>
+                                <th>Ticket 3</th>
+                                <th>Ticket 3 Price/Status</th>
+                                <th>Ticket 4</th>
+                                <th>Ticket 4 Price/Status</th>
                                 <th>Game Page</th>
                             </tr>
                         </thead>
@@ -49,7 +54,7 @@ import Error from '../../Utilities/Error';
                     )})}
                     </tbody>
                         </table>
-                    </ul>
+                    </div>
                  </div>
              )}}
       </Query>

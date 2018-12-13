@@ -1,8 +1,8 @@
 import React from 'react';
 import { Mutation } from 'react-apollo';
 import { 
-    ACCECPT_TRADE, 
-    SWAP_GAMES, 
+    SWAP_GAME1, 
+    SWAP_GAME2, 
     GET_USER, 
     TRADE_STATUS_ACCEPTED, 
     TRADE_STATUS_REJECTED, 
@@ -14,15 +14,16 @@ import {
     FEED_QUERY
 } from '../../queries';
 
+import RejectTrade from '../Tickets/RejectTrade'
+import AcceptTrade from '../Tickets/AcceptTrade';
 
 
-
-const makeTrade = async (acceptTrade, swapGames, statusChange, logTradeAccepted) => {
+const makeTrade = async (swapGame1, swapGame2, statusChange, logTradeAccepted) => {
     try{
-    await acceptTrade().then(({ data }) => {
+    await swapGame1().then(({ data }) => {
         console.log(data);
    });
-    await swapGames().then(({ data }) => {
+    await swapGame2().then(({ data }) => {
         console.log(data);
     });
     await logTradeAccepted().then(({ data }) => {
@@ -34,21 +35,6 @@ const makeTrade = async (acceptTrade, swapGames, statusChange, logTradeAccepted)
     } catch(e) {
     }
 }
-
-const rejectTrade = async (statusChange, gameTwoPending, gameOnePending, logTradeRejected) => {
-    await statusChange().then(({ data }) => {
-        
-    })
-    await gameTwoPending().then(({ data }) => {
-
-    })
-    await gameOnePending().then(({ data }) => {
-
-    })
-    await logTradeRejected().then(({ data }) => {
-        
-    })
-};
 
 const TradeConfirmation = ({trade, session}) => {
     const userRequestedTrade = trade.tradeFrom === session.user.id;
@@ -75,27 +61,21 @@ const TradeConfirmation = ({trade, session}) => {
                 >
                     {statusAccepted => (
                     <Mutation 
-                    mutation={SWAP_GAMES} 
+                    mutation={SWAP_GAME2} 
                     variables={{ id: trade.fromGameId, usersIds: [trade.tradeTo], tradePending: false}}
                     >
-                        {(swapGames) => (
+                        {(swapGame2) => (
                         <Mutation 
-                        mutation={ACCECPT_TRADE} 
+                        mutation={SWAP_GAME1} 
                         variables={{ id: trade.toGameId, usersIds: [trade.tradeFrom], tradePending: false}}
                         refetchQueries={() => [{query: GET_USER, variables: {id: session.user.id}}, {query: ALL_GAMES_NOT_ME, variables: {id: session.user.id}}]}
                         >
-                        {(acceptTrade) => (
-                            <Mutation mutation={TRADE_STATUS_REJECTED} 
-                            variables={{ id: trade.id, status: 'Rejected'}}
-                            refetchQueries={() => [{query: GET_USER, variables: {id: session.user.id}}, {query: ALL_GAMES_NOT_ME, variables: {id: session.user.id}}]}
-                            >
-                            {statusRejected => (
+                        {(swapGame1) => (
                                 <div>
-                                    {!userRequestedTrade && <button onClick={() => makeTrade(acceptTrade, swapGames, statusAccepted, logTradeAccepted)} className="button-primary">Accept Trade</button>}
-                                    <button onClick={() => rejectTrade(statusRejected, gameOnePending, gameTwoPending, logTradeRejected)} className="button-primary">Reject Trade</button>
+                                    {!userRequestedTrade && <button onClick={() => makeTrade(swapGame1, swapGame2, statusAccepted, logTradeAccepted)} className="button-primary">Accept Trade</button>}
+                                    <AcceptTrade trade={trade} session={session}/>
+                                    <RejectTrade trade={trade} session={session}/>
                                 </div>
-                            )}
-                            </Mutation>
                         )}
                         </Mutation>
                         )}

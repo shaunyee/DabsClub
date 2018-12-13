@@ -49,6 +49,11 @@ export const GET_USER = gql`
           date
           id
           price
+          tickets {
+            price
+            id
+            status
+          }
          }
           trades {
             id
@@ -63,6 +68,35 @@ export const GET_USER = gql`
           tradeTo
           toGameId
           fromGameId
+          fromTicket1
+          fromTicket2
+          fromTicket3
+          fromTicket4
+          toTicket1
+          toTicket2
+          toTicket3
+          toTicket4
+          tickets {
+            id
+            price
+          }
+          games{
+            id
+            opponent
+            users{
+              id
+              username
+            }
+          }
+    }
+    tickets {
+      id
+      price
+      status
+      game {
+        id
+        opponent
+      }
     }
   }
   }
@@ -80,6 +114,16 @@ export const ALL_GAMES = gql`
       users {
         id
         username
+      }
+      tickets{
+        id
+        seatNumber
+        status
+        price
+        user {
+          id
+          username
+        }
       }
       trades {
         status
@@ -105,9 +149,20 @@ export const GET_GAME = gql`
         trades {
           status
         }
+        tickets {
+          id
+          price
+          status
+          seatNumber
+          user {
+            id
+            username
+          }
+        }
     }
   }
 `;
+
 
 export const ALL_GAMES_NOT_ME = gql`
 query notMe($id: ID!) {
@@ -126,6 +181,21 @@ query notMe($id: ID!) {
 }
 
 `;
+
+export const GET_TICKET = gql `
+  query($id: ID!) {
+    Ticket(id: $id) {
+      id
+      price
+      user{
+        username
+      }
+      game {
+        opponent
+      }
+    }
+  }
+`
 
 export const RESET_PASSWORD_QUERY = gql`
   query($resetToken: String!) {
@@ -210,6 +280,37 @@ export const UPDATE_GAME = gql`
   }
     }
 `;
+
+export const UPDATE_TICKET_PRICE = gql`
+    mutation updateTicketPrice($id: ID!, $price: Int!, $status: String) {
+      updateTicket(id: $id, price: $price, status: $status) {
+        id
+      }
+    }
+`;
+
+export const UPDATE_TICKET_2 = gql`
+    mutation updateTicket2($id: ID!, $price: Int!, $status: String,){
+      updateTicket(id: $id, price: $price, status: $status) {
+        id
+      }
+    }
+`;
+export const UPDATE_TICKET_3 = gql`
+    mutation updateTicket3($id: ID!, $price: Int!, $status: String,){
+      updateTicket(id: $id, price: $price, status: $status) {
+        id
+      }
+    }
+`;
+export const UPDATE_TICKET_4 = gql`
+    mutation updateTicket4($id: ID!, $price: Int!, $status: String,){
+      updateTicket(id: $id, price: $price, status: $status) {
+        id
+      }
+    }
+`;
+
 export const DELETE_GAME = gql`
     mutation($id: ID!) {
   deleteGame(id: $id) {
@@ -218,9 +319,17 @@ export const DELETE_GAME = gql`
 }
 `;
 
+export const CREATE_TICKET = gql`
+  mutation createTicket($gameId: ID!, $seatNumber: String!, $userId: ID!){
+    createTicket(gameId: $gameId, seatNumber: $seatNumber, userId: $userId) {
+      id
+    }
+  }
+`;
+
 export const CREATE_TRADE = gql`
-mutation createTrade($usersIds: [ID!], $fromGameId: String!, $toGameId: String!, $fromDate: String!, $toDate:String, $tradeFrom: String!, $tradeTo: String!, $fromOp: String!, $toOp:String!, $fromUsername: String!, $toUsername:String!, $status: String, $gamesIds: [ID!]){
-  createTrade(usersIds: $usersIds, fromGameId: $fromGameId, toGameId: $toGameId, fromDate: $fromDate, toDate: $toDate, tradeFrom: $tradeFrom, tradeTo: $tradeTo, fromOp: $fromOp, toOp:$toOp, fromUsername:$fromUsername, toUsername: $toUsername, status: $status, gamesIds: $gamesIds) {
+mutation createTrade($usersIds: [ID!], $gamesIds: [ID!], $ticketsIds: [ID!], $fromGameId: String!, $toGameId: String!, $fromDate: String!, $toDate:String, $tradeFrom: String!, $tradeTo: String!, $fromOp: String!, $toOp:String!, $fromUsername: String!, $toUsername:String!, $status: String, $fromTicket1: String!, $fromTicket2: String, $fromTicket3: String, $fromTicket4: String, $toTicket1: String!, $toTicket2: String, $toTicket3: String, $toTicket4: String){
+  createTrade(usersIds: $usersIds, gamesIds: $gamesIds, ticketsIds: $ticketsIds, fromGameId: $fromGameId, toGameId: $toGameId, fromDate: $fromDate, toDate: $toDate, tradeFrom: $tradeFrom, tradeTo: $tradeTo, fromOp: $fromOp, toOp:$toOp, fromUsername:$fromUsername, toUsername: $toUsername, status: $status, fromTicket1: $fromTicket1, fromTicket2: $fromTicket2,fromTicket3: $fromTicket3,fromTicket4: $fromTicket4, toTicket1: $toTicket1, toTicket2: $toTicket2, toTicket3: $toTicket3, toTicket4: $toTicket4) {
     id
     tradeTo
     tradeFrom
@@ -229,8 +338,8 @@ mutation createTrade($usersIds: [ID!], $fromGameId: String!, $toGameId: String!,
 }
 `;
 
-export const ACCECPT_TRADE = gql`
-  mutation acceptTrade($id: ID!, $usersIds: [ID!]!, $tradePending: Boolean!) {
+export const SWAP_GAME1 = gql`
+  mutation swapGame1($id: ID!, $usersIds: [ID!]!, $tradePending: Boolean!) {
     updateGame(id: $id, usersIds: $usersIds, tradePending: $tradePending) {
       id
       opponent
@@ -242,8 +351,8 @@ export const ACCECPT_TRADE = gql`
   }
 `;
 
-export const SWAP_GAMES = gql`
-  mutation swapGames($id: ID!, $usersIds: [ID!]!, $tradePending: Boolean!) {
+export const SWAP_GAME2 = gql`
+  mutation swapGame2($id: ID!, $usersIds: [ID!]!, $tradePending: Boolean!) {
     updateGame(id: $id, usersIds: $usersIds, tradePending: $tradePending) {
       id
       opponent
@@ -272,6 +381,72 @@ export const GAME_TWO_PENDING = gql`
     }
   }
 `;
+
+export const TICKET_FROM1_PENDING = gql`
+    mutation ticketFrom1Pending($id: ID!, $trading: Boolean!){
+    updateTicket(id: $id, trading: $trading){
+      id
+      trading
+    }
+  } 
+`;
+export const TICKET_FROM2_PENDING = gql`
+    mutation ticketFrom2Pending($id: ID!, $trading: Boolean!){
+    updateTicket(id: $id, trading: $trading){
+      id
+      trading
+    }
+  }
+`;
+export const TICKET_FROM3_PENDING = gql`
+    mutation ticketFrom3Pending($id: ID!, $trading: Boolean!){
+    updateTicket(id: $id, trading: $trading){
+      id
+      trading
+    }
+  }
+`;
+export const TICKET_FROM4_PENDING = gql`
+    mutation ticketFrom4Pending($id: ID!, $trading: Boolean!){
+    updateTicket(id: $id, trading: $trading){
+      id
+      trading
+    }
+  }
+`;
+export const TICKET_TO1_PENDING = gql`
+    mutation ticketTo1Pending($id: ID!, $trading: Boolean!){
+    updateTicket(id: $id, trading: $trading){
+      id
+      trading
+    }
+  }
+`;
+export const TICKET_TO2_PENDING = gql`
+    mutation ticketTo2Pending($id: ID!, $trading: Boolean!){
+    updateTicket(id: $id, trading: $trading){
+      id
+      trading
+    }
+  }
+`;
+export const TICKET_TO3_PENDING = gql`
+    mutation ticketTo3Pending($id: ID!, $trading: Boolean!){
+    updateTicket(id: $id, trading: $trading){
+      id
+      trading
+    }
+  }
+`;
+export const TICKET_TO4_PENDING = gql`
+    mutation ticketTo4Pending($id: ID!, $trading: Boolean!){
+    updateTicket(id: $id, trading: $trading){
+      id
+      trading
+    }
+  }
+`;
+
 
 export const TRADE_STATUS_ACCEPTED = gql`
   mutation statusAccepted($id: ID!, $status: String!) {

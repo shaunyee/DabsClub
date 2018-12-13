@@ -1,18 +1,22 @@
 import React, { Component } from 'react';
 
-import TradeForGames from './TradeForGames'
+import TradeTickets from '../Tickets/TradeTickets';
 
 
 export default class InitiateTrade extends Component {
     state ={
-    showGames: false
+    openModal: false
     };
+
+    closeModal = () => {
+        this.setState({ openModal: false})
+    }
   render() {
       const {session, game } = this.props;
     return (
         <div>
-            <button onClick={() => this.setState({showGames: !this.state.showGames})}>Trade This Game</button>
-            {this.state.showGames && <TradeForGames session={session} game={game}/>}
+            <button onClick={() => this.setState({openModal: true})}>Trade This Game</button>
+            {this.state.openModal && <TradeTickets session={session} game={game} closeModal={this.closeModal}/>}
         </div>
     )
   }

@@ -3,6 +3,7 @@ import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
 import 'react-tabs/style/react-tabs.css';
 import CreateGame from './CreateGame';
 import EditGameList from './EditGameList';
+import CreateTicket from '../Tickets/CreateTicket';
 import { Redirect } from 'react-router-dom';
 
 const GameManager = props => {
@@ -17,6 +18,7 @@ const GameManager = props => {
     <TabList>
       <Tab>Game Creater</Tab>
       <Tab>Game Editor</Tab>
+    <Tab>Ticket Creater</Tab>
     </TabList>
 
     <TabPanel>
@@ -26,6 +28,10 @@ const GameManager = props => {
     <TabPanel>
         <EditGameList session={props.session}/> 
     </TabPanel>
+    <TabPanel>
+        <CreateTicket /> 
+    </TabPanel>
+    
   </Tabs>
     </div>
   )

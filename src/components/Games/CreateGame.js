@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import { CREATE_GAME, GET_ALL_USERS, ALL_GAMES} from '../../queries';
 import Form from '../../Styles/Form';
 import Spinner from '../UI/Spinner'
+import {formatDate} from '../../Utilities/formatDate'
 
 
 
@@ -65,7 +66,14 @@ const Checkbox = styled.input`
 
     handleChange = event => {
         const { name, value, type } = event.target;
-        const val = type === 'number' ? parseFloat(value) : value;
+        let val;
+        if (type === 'number') {
+            val = parseFloat(value)
+        } else if(type === 'date') {
+            val = formatDate(value)
+        } else {
+            val = value
+        }
         this.setState({
           [name]: val
         })
